@@ -12,4 +12,11 @@
         android:id="@+id/rv_fragement"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <include
+        android:visibility="gone"
+        android:id="@+id/error_layout_id"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        layout="@layout/error"/>
 </FrameLayout>

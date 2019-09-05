@@ -15,23 +15,22 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import retrofit2.create
 
-class Presenter(_view: ViewInterface): PresenterInterface {
+class Presenter(_view: ViewInterface?): PresenterInterface {
+    var compositeDisposable = CompositeDisposable()
 
     override fun makeRetrofitCall(){
         var retrofit = RetrofitInstance().retrofitInstance().create(StarWarsInterface::class.java)
 
         var call = retrofit.getStarWars()
 
+
+        compositeDisposable.add(
         call.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(starWarsObserver())
+            .subscribe({t -> view?.recycle(t) }, {error -> view?.throwError()}))
     }
 
-
-    var compositeDisposable = CompositeDisposable()
-
-
-    fun starWarsObserver() : Observer<StarWarsModel>{
+    /*fun starWarsObserver() : Observer<StarWarsModel>{
         return object : Observer<StarWarsModel>{
             override fun onComplete() {
                 Log.d(Constants.TAG + " ON_COMPLETE", "All items Emitted!")
@@ -54,15 +53,27 @@ class Presenter(_view: ViewInterface): PresenterInterface {
             }
 
         }
-    }
+    }*/
+
+
+
+
 
     var view = _view
 
     private fun starWars(starWars: StarWarsModel){
-        view.recycle(starWars)
+        view?.recycle(starWars)
     }
 
     private fun animals(animal: String){
         Log.d(TAG + "ANIMALS", animal)
     }
+
+    override fun onDestroy() {
+        view = null
+        compositeDisposable.clear()
+
+    }
+
+
 }

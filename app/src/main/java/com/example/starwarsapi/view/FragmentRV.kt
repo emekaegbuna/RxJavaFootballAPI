@@ -1,6 +1,7 @@
 package com.example.starwarsapi.view
 
 
+import android.opengl.Visibility
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,12 +12,18 @@ import com.example.starwarsapi.R
 import com.example.starwarsapi.model.StarWarsModel
 import com.example.starwarsapi.presenter.Presenter
 import com.example.starwarsapi.presenter.ViewInterface
+import kotlinx.android.synthetic.main.error.*
+import kotlinx.android.synthetic.main.error.view.*
 import kotlinx.android.synthetic.main.fragment_fragment_rv.*
 
 /**
  * A simple [Fragment] subclass.
  */
 class FragmentRV : Fragment(), ViewInterface {
+    override fun throwError() {
+        error_layout_id.visibility = View.VISIBLE
+       // tv_error.tv_error_message.text = error.message
+    }
 
     override fun recycle(starWarsModel: StarWarsModel) {
         var adapter = Adapter(starWarsModel)
@@ -45,7 +52,7 @@ class FragmentRV : Fragment(), ViewInterface {
     override fun onDestroy() {
         super.onDestroy()
 
-        presenter.compositeDisposable.dispose()
+        presenter.onDestroy()
     }
 
 
